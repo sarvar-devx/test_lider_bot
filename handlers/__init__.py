@@ -1,0 +1,3 @@
+from handlers.admin_handlers import admin_router
+from handlers.command_handlers import command_router
+from handlers.main_handlers import main_router
