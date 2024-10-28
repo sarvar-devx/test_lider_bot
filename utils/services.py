@@ -22,7 +22,6 @@ async def send_first_name(message: Message, state: FSMContext) -> None:
 
 
 async def send_last_name(message: Message, state: FSMContext) -> None:
-    await state.update_data(first_name=message.text)
     await message.answer('✍ <b>Familiyangizni kiriting.</b>')
     await state.set_state(UserStates.last_name)
 

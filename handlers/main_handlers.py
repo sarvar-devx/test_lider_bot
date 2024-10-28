@@ -29,6 +29,7 @@ async def first_name_handler(message: Message, state: FSMContext) -> None:
         return
 
     await send_last_name(message, state)
+    await state.update_data(first_name=message.text)
 
 
 @main_router.message(UserStates.last_name)
@@ -48,7 +49,7 @@ async def phone_number_handler(message: Message, state: FSMContext) -> None:
     if message.contact is None:
         await message.answer("<b>🙅 Telefon raqamni pastdagi tugma orqali yuboring 👇</b>", reply_markup=phone_number_rkb)
         return
-    phone_number = message.contact.phone_number[4:]
+    phone_number = message.contact.phone_number[-9:]
     user_data = await state.get_data()
     user_data.update({
         'id': message.from_user.id,
