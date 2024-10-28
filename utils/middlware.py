@@ -31,7 +31,7 @@ class SubscriptionMiddleware(BaseMiddleware):
             ikb = await make_channels_button(unsubscribe_channels, update.bot)
             ikb.row(InlineKeyboardButton(text='✅ Tasdiqlash',
                                          callback_data='channel_confirm__' + str(message.message_id)))
-            await update.event.answer("Botni foydalanishdan oldin kannalarga a'zo bo'ling",
+            await message.answer("Botni foydalanishdan oldin kannalarga a'zo bo'ling",
                                       reply_markup=ikb.as_markup())
             return
 
