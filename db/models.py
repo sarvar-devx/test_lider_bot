@@ -13,14 +13,14 @@ class User(TimeBaseModel):
     first_name: Mapped[str] = mapped_column(String(255))
     last_name: Mapped[str] = mapped_column(String(255), nullable=True)
     phone_number: Mapped[str] = mapped_column(String(12))
-    user_test_answers: Mapped[list['TestAnswer']] = relationship("TestAnswer", back_populates="user")
+    user_test_answers: Mapped[list['TestAnswer']] = relationship("TestAnswer", back_populates="user", ondelete='CASCADE')
 
 
 class Test(TimeBaseModel):
     name: Mapped[str] = mapped_column(String(255))
     answers: Mapped[dict] = mapped_column(JSON)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    user_test_answers: Mapped[list['TestAnswer']] = relationship("TestAnswer", back_populates="test")
+    user_test_answers: Mapped[list['TestAnswer']] = relationship("TestAnswer", back_populates="test", ondelete='CASCADE')
 
 
 class TestAnswer(TimeBaseModel):
