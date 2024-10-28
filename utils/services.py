@@ -72,7 +72,7 @@ async def create_statistic_test_answers(test: Test, answers):
 """ + f"""<body>
 <div class="body">
 
-    </br><b>Ushbu hisobot <a href="https://t.me/sarvdev_bot"><font color='red'>@sarvdev_bot</font></a> orqali
+    </br><b>Ushbu hisobot <a href="https://t.me/Test_Lider_bot"><font color='red'>@Test_Lider_bot</font></a> orqali
     tayyorlandi.</b></br>
     <b>Test muallifi:</b> Xumoyun Abdusamatov <br>
 

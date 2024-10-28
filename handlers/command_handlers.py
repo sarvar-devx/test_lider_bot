@@ -44,13 +44,13 @@ async def help_command_handler(message: Message) -> None:
 Tugmalar:
 <i>{UserButtons.CHECK_ANSWER}</i> - Botga kiritilgan testlarni javoblarini kiritish\n
 <i>{UserButtons.ADMIN}</i> - Admin bilan bog'lanish \n
-<i>Agar sizda qandaydir muammo bulsa yoki savollaringiz bulsa <a href='https://t.me/ Abdusamatov_Xumoyun'>Admin</a> ga murojat qiling</i>
+<i>Agar sizda qandaydir muammo bulsa yoki savollaringiz bulsa <a href='https://t.me/Abdusamatov_Xumoyun'>Admin</a> ga murojat qiling</i>
 ''')
 
 
 @command_router.message()
 async def any(message: Message):
-    await message.answer("""<a href="https://t.me/sarvdev_bot">@sarvdev_bot</a> - bu sizning yordamchingiz 😊
+    await message.answer("""<a href="https://t.me/Test_Lider_bot">@Test_Lider_bot</a> - bu sizning yordamchingiz 😊
 
 <b>Siz bot yordamida o'z auditoriyangizdan testlar olishingiz mumkin.</b>
 

@@ -22,8 +22,7 @@ async def make_channels_button(channel_ids: Iterable, bot: Bot):
 
 class SubscriptionMiddleware(BaseMiddleware):
     async def __call__(self, handler, update: Update, data):
-        unsubscribe_channels = [channel_id for channel_id in conf.bot.CHANNELS if (
-            await update.bot.get_chat_member(channel_id, update.event.from_user.id)).status == ChatMemberStatus.LEFT]
+        unsubscribe_channels = [channel_id for channel_id in conf.bot.CHANNELS]
         if unsubscribe_channels:
             ikb = await make_channels_button(unsubscribe_channels, update.bot)
             ikb.row(InlineKeyboardButton(text='✅ Tasdiqlash',
