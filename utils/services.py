@@ -27,12 +27,12 @@ async def send_last_name(message: Message, state: FSMContext) -> None:
 
 
 async def create_test_send_answers(message: Message, state: FSMContext) -> None:
-    await message.answer('Test ❕Javoblarini kiriting \nMasalan: 1-a 2-b 3-s 4-h')
+    await message.answer('Test ❕Javoblarini kiriting \nMasalan: abcd... yoki 1a2b3c4d...')
     await state.set_state(CreateTestStates.answers)
 
 
 async def create_test_answers_send_user_answers(message: Message, state: FSMContext, sending_text: str) -> None:
-    await message.answer(sending_text + "\n<blockquote>Format: 1-a 2-b 3-s 4-h</blockquote>")
+    await message.answer(sending_text + "\n<blockquote>Format: abcd... yoki 1a2b3c4d...</blockquote>")
     await state.set_state(CheckTestAnswersStates.user_answers)
 
 
