@@ -50,8 +50,6 @@ Tugmalar:
 
 @command_router.message()
 async def any(message: Message):
-    await message.answer("""<a href="https://t.me/Test_Lider_bot">@Test_Lider_bot</a> - bu sizning yordamchingiz 😊
-
-<b>Siz bot yordamida o'z auditoriyangizdan testlar olishingiz mumkin.</b>
+    await message.answer("""<a href="https://t.me/Eng_Math_Piima_bot">@Eng_Math_Piima_bot</a>
 
 <i>Foydalanish bo'yicha to'liq ma'lumot olish uchun /help buyrug'idan foydalaning</i>""")

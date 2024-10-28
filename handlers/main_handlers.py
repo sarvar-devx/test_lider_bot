@@ -1,3 +1,5 @@
+import re
+
 from aiogram import Router, F, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton, \
@@ -160,14 +162,36 @@ async def check_answer_handler(message: Message, state: FSMContext) -> None:
 async def check_answer_handler(message: Message, state: FSMContext, bot: Bot) -> None:
     try:
         user_answers = {}
-        for i in message.text.split():
-            j = i.index('-')
-            user_answers[i[:j]] = i[j + 1:].lower()
-    except ValueError:
+        if not message.text.isalnum():
+            raise ValueError
+        if message.text.isalpha():
+            for index, value in enumerate(message.text, 1):
+                user_answers[str(index)] = value.lower()
+        else:
+            numbers = 0
+            letters = 0
+            for i in range(len(message.text) - 1):
+                if message.text[i].isdigit() and message.text[i + 1].isdigit():
+                    continue
+                if message.text[i].isdigit():
+                    numbers += 1
+                elif message.text[i].isalpha():
+                    letters += 1
+            if message.text[-1].isdigit():
+                numbers += 1
+            elif message.text[-1].isalpha():
+                letters += 1
+            if numbers != letters:
+                raise ValueError
+            letters = re.findall(r"[a-zA-Z]", message.text)
+            for index, value in enumerate(letters, 1):
+                user_answers[str(index)] = value.lower()
 
+    except ValueError:
         await create_test_answers_send_user_answers(message, state,
                                                     "‼Siz kiritgan javoblar formati noto'g'ri, iltimos tekshirib so'ralgan formatda yuboring.")
         return
+
     test_answers = await state.get_data()
     if len(user_answers) != len(test_answers['answers']):
         await create_test_answers_send_user_answers(message, state,

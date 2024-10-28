@@ -43,6 +43,7 @@ async def create_statistic_test_answers(test: Test, answers):
         users += f"""<tr>
                 <td align='center'> {i}</td>d
                 <td align='center'>{test_answer.user.last_name} {test_answer.user.first_name}</td>
+                <td align='center'>+998 {test_answer.user.phone_number}</td>
                 <td align='center'> {len(test_answer.accepted_answers)}</td>
                 <td align='center'> {test_answer.quality_level:.1f}%</td>
                 <td align='center'> {test_answer.created_at.date()} {test_answer.created_at.hour}:{test_answer.created_at.minute}:{test_answer.created_at.second}</td>
@@ -71,7 +72,7 @@ async def create_statistic_test_answers(test: Test, answers):
 """ + f"""<body>
 <div class="body">
 
-    </br><b>Ushbu hisobot <a href="https://t.me/Test_Lider_bot"><font color='red'>@Test_Lider_bot</font></a> orqali
+    </br><b>Ushbu hisobot <a href="https://t.me/Eng_Math_Piima_bot"><font color='red'>@Eng_Math_Piima_bot</font></a> orqali
     tayyorlandi.</b></br>
     <b>Test muallifi:</b> Xumoyun Abdusamatov <br>
 
@@ -82,6 +83,7 @@ async def create_statistic_test_answers(test: Test, answers):
         <tr style='background-color:beige;'>
             <th>T/r</th>
             <th>Ism Familiya</th>
+            <th>Telefon raqam</th>
             <th>Natija</th>
             <th>Foiz</th>
             <th>Vaqti</th>

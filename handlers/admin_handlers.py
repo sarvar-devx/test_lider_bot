@@ -1,3 +1,5 @@
+import re
+
 from aiogram import Router, F
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
@@ -84,13 +86,36 @@ async def create_test_send_answers_handler(message: Message, state: FSMContext) 
 async def create_test_handler(message: Message, state: FSMContext) -> None:
     try:
         answers = {}
-        for i in message.text.split():
-            j = i.index('-')
-            answers[i[:j]] = i[j + 1:].lower()
+        if not message.text.isalnum():
+            raise ValueError
+        if message.text.isalpha():
+            for index, value in enumerate(message.text, 1):
+                answers[str(index)] = value.lower()
+        else:
+            numbers = 0
+            letters = 0
+            for i in range(len(message.text) - 1):
+                if message.text[i].isdigit() and message.text[i + 1].isdigit():
+                    continue
+                if message.text[i].isdigit():
+                    numbers += 1
+                elif message.text[i].isalpha():
+                    letters += 1
+            if message.text[-1].isdigit():
+                numbers += 1
+            elif message.text[-1].isalpha():
+                letters += 1
+            if numbers != letters:
+                raise ValueError
+            letters = re.findall(r"[a-zA-Z]", message.text)
+            for index, value in enumerate(letters, 1):
+                answers[str(index)] = value.lower()
+
     except ValueError:
         await message.answer("Siz kiritgan javoblar formati noto'g'ri, iltimos tekshirib so'ralgan formatda yuboring.")
         await create_test_send_answers(message, state)
         return
+
     await state.update_data(answers=answers)
     ikb = InlineKeyboardMarkup(
         inline_keyboard=[[InlineKeyboardButton(text='✅ Ha', callback_data='confirm_creating_test'),
