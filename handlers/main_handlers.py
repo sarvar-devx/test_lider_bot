@@ -151,6 +151,7 @@ async def check_answer_handler(message: Message, state: FSMContext) -> None:
 🎯 Sifat: {(len(user_answer.accepted_answers) / len(user_answer.test.answers) * 100):.1f}%
 ⏱️ <b>{user_answer.created_at.date()} {user_answer.created_at.hour}:{user_answer.created_at.minute}</b>""",
                              reply_markup=main_keyboard_btn().as_markup(resize_keyboard=True))
+        await state.clear()
         return
 
     await state.update_data(answers=test.answers, test_id=test.id)
