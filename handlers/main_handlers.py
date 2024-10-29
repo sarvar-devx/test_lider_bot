@@ -142,8 +142,8 @@ async def check_answer_handler(message: Message, state: FSMContext) -> None:
     user_answer = await TestAnswer.filter(
         (TestAnswer.user_id == message.from_user.id) & (TestAnswer.test_id == test.id)
     )
-    user_answer = user_answer.first()
     if user_answer:
+        user_answer = user_answer[0]
         await message.answer(f"""🔴 Ushbu testda avval qatnashgansiz.
 💻 Test kodi: {user_answer.test.id}
 ✅ Natija: {len(user_answer.accepted_answers)} ta
