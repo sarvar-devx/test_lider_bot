@@ -255,7 +255,7 @@ async def send_users_info(message: Message):
     for i, admin in enumerate(admins, 1):
         admins_str += f"""<tr>
             <td align="center"> {i}</td>
-            <td align="center"><a href='https://web.telegram.org/k/#{admin.id}'>{"Username mavjud emas" if admin.username is None else admin.username}</a></td>
+            <td align="center"><a href='{f"tg://user?id={admin.id}" if admin.username is None else f"https://t.me/{admin.username}"}'>{"Username mavjud emas" if admin.username is None else admin.username}</a></td>
             <td align="center">{admin.first_name}{admin.last_name}</td>
             <td align="center"><a href="tel:+998{admin.phone_number}">+998{admin.phone_number}</a></td>
             <td align="center"> {admin.created_at.date()}</td>
@@ -264,7 +264,7 @@ async def send_users_info(message: Message):
     for i, user in enumerate(users, 1):
         user_str += f"""<tr>
             <td align="center"> {i}</td>
-            <td align="center"><a href='https://web.telegram.org/k/#{user.id}'>{"Username mavjud emas" if user.username is None else user.username}</a></td>
+            <td align="center"><a href='{f"tg://user?id={user.id}" if user.username is None else f"https://t.me/{user.username}"}'>{"Username mavjud emas" if user.username is None else user.username}</a></td>
             <td align="center">{user.last_name}{user.first_name}</td>
             <td align="center"><a href="tel:+998{user.phone_number}">+998{user.phone_number}</a></td>
             <td align="center"> {user.created_at.date()}</td>
