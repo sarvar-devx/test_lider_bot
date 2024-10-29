@@ -41,7 +41,7 @@ async def create_statistic_test_answers(test: Test, answers):
     users = ''
     for i, test_answer in enumerate(answers_users, start=1):
         users += f"""<tr>
-                <td align='center'> {i}</td>d
+                <td align='center'> {i}</td>
                 <td align='center'>{test_answer.user.last_name} {test_answer.user.first_name}</td>
                 <td align='center'>+998 {test_answer.user.phone_number}</td>
                 <td align='center'> {len(test_answer.accepted_answers)}</td>

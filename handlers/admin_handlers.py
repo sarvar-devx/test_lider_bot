@@ -245,3 +245,13 @@ async def tests_handler(callback: CallbackQuery):
             [InlineKeyboardButton(text="📊 Holat", callback_data='test_statistics_' + str(test.id)),
              InlineKeyboardButton(text='⏰ Yakunlash', callback_data='stop_test_' + str(test.id))]])
     await callback.message.answer(text, reply_markup=ikb)
+
+
+@admin_router.message(F.text == AdminButtons.USERS)
+async def send_users_info(message: Message):
+    await message.answer()
+
+
+""" 
+
+"""

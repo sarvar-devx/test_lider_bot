@@ -15,6 +15,7 @@ class AdminButtons:
     CREATE_TEST = '✍ Test Yaratish'
     STATISTIC = '📊 Testlar Statistikasi'
     TO_ANNOUNCE = '📣 Kanallarga elon berish'
+    USERS = '🙍 Foydalanuvchilar'
     SKIP = "⏭️ O'tkazib yuborish"
 
 
@@ -31,6 +32,7 @@ def admin_keyboard_btn(**kwargs):
     keyboard_btn.row(KeyboardButton(text=AdminButtons.CREATE_TEST, **kwargs))
     keyboard_btn.row(KeyboardButton(text=AdminButtons.STATISTIC, **kwargs))
     keyboard_btn.row(KeyboardButton(text=AdminButtons.TO_ANNOUNCE, **kwargs))
+    keyboard_btn.row(KeyboardButton(text=AdminButtons.USERS, **kwargs))
     keyboard_btn.adjust(2, repeat=True)
     return keyboard_btn
 
@@ -40,5 +42,3 @@ phone_number_rkb = ReplyKeyboardMarkup(
 
 skip_cancel_rkb = ReplyKeyboardMarkup(
     keyboard=[[KeyboardButton(text=AdminButtons.SKIP)], [KeyboardButton(text=UserButtons.BACK)]], resize_keyboard=True)
-
-
