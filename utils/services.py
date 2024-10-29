@@ -62,7 +62,7 @@ async def create_statistic_test_answers(test: Test, answers):
         }
 
         body {
-    background - color: rgb(253, 253, 239);
+    background-color: rgb(253, 253, 239);
         }
 
         .body {

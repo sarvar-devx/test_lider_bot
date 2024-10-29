@@ -91,7 +91,7 @@ class AbstractClass:
         if relationship:
             query = query.options(selectinload(relationship))
 
-        return (await db.execute(query)).scalars()
+        return (await db.execute(query)).scalars().all()
 
     @classmethod
     async def count_by(cls, criteria):
@@ -99,7 +99,7 @@ class AbstractClass:
 
     @classmethod
     async def all(cls):
-        return (await db.execute(select(cls))).scalars()
+        return (await db.execute(select(cls))).scalars().all()
 
 
 class BaseModel(Base, AbstractClass):
