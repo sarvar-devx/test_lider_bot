@@ -5,11 +5,11 @@ from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, InlineKeyboardMarkup, ReplyKeyboardRemove, InlineKeyboardButton, CallbackQuery, \
-    ReplyKeyboardMarkup, KeyboardButton, FSInputFile
+    ReplyKeyboardMarkup, KeyboardButton, FSInputFile, document
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from config import conf
-from db import Test, TestAnswer
+from db import Test, TestAnswer, User
 from utils.create_certificates import sending_certificates
 from utils.filters import IsAdminFilter
 from utils.keyboard import admin_keyboard_btn, AdminButtons, UserButtons
@@ -249,9 +249,94 @@ async def tests_handler(callback: CallbackQuery):
 
 @admin_router.message(F.text == AdminButtons.USERS)
 async def send_users_info(message: Message):
-    await message.answer()
+    users = await User.all()
+    admins = await User.filter(User.id.in_(conf.bot.get_admin_list))
+    admins_str = ""
+    for i, admin in enumerate(admins, 1):
+        admins_str += f"""<tr>
+            <td align="center"> {i}</td>
+            <td align="center"><a href='https://web.telegram.org/k/#{admin.id}'>{"Username mavjud emas" if admin.username is None else admin.username}</a></td>
+            <td align="center">{admin.first_name}{admin.last_name}</td>
+            <td align="center"><a href="tel:+998{admin.phone_number}">+998{admin.phone_number}</a></td>
+            <td align="center"> {admin.created_at.date()}</td>
+        </tr>"""
+    user_str = ""
+    for i, user in enumerate(users, 1):
+        user_str += f"""<tr>
+            <td align="center"> {i}</td>
+            <td align="center"><a href='https://web.telegram.org/k/#{user.id}'>{"Username mavjud emas" if user.username is None else user.username}</a></td>
+            <td align="center">{user.last_name}{user.first_name}</td>
+            <td align="center"><a href="tel:+998{user.phone_number}">+998{user.phone_number}</a></td>
+            <td align="center"> {user.created_at.date()}</td>
+        </tr>"""
+    message_text = """ 
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Test hisoboti</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
 
+        body {
+            background-color: rgb(253, 253, 239);
+        }
 
-""" 
-
+        .body {
+            margin: 0 20px 0 10px;
+        }
+    </style>
+</head>"""
+    message_text += f"""<body>
+<div class="body">
+    <br>
+    <b> Adminlar: </b> {len(admins)} ta
+    <br>
+    <br>
+    <table width="100%">
+        <thead>
+        <tr style="background-color:limegreen;">
+            <th>T/r</th>
+            <th>Username</th>
+            <th>Ism Familiya</th>
+            <th>Telefon raqam</th>
+            <th>Botga register qilgan vaqti</th>
+        </tr>
+        </thead>
+        <tbody>
+        {admins_str}
+        </tbody>
+    </table>
+    <br>
+    <br>
+    <br>
+    <b>Hamma Foydalanuvcholar:</b> {len(users)} ta
+    <br>
+    <br>
+    <table width="100%">
+        <thead>
+        <tr style="background-color:yellow;">
+            <th>T/r</th>
+            <th>Username</th>
+            <th>Ism Familiya</th>
+            <th>Telefon raqam</th>
+            <th>Botga register qilgan vaqti</th>
+        </tr>
+        </thead>
+        <tbody>
+        {user_str}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
 """
+
+    with open(f"media/users_list_for_admin.html", 'w', encoding='utf-8') as file:
+        file.write(message_text)
+
+    await message.answer_document(FSInputFile('media/users_list_for_admin.html'))
