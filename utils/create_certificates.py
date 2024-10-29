@@ -32,7 +32,7 @@ async def sending_certificates(bot: Bot, test: Test, certificate_num: int):
     if 4 == certificate_num or 3 == certificate_num:
         test_code = str(test.id)
         issue_date = str(datetime.now().date())
-        if '3' in certificate_path:
+        if 3 == certificate_num:
             name_position = (400, 445)
             user_rank_position = (465, 610)
             user_rank_color = colors['cyan']

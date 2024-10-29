@@ -200,7 +200,6 @@ async def sending_certificates_handler(callback: CallbackQuery):
     await callback.message.edit_reply_markup()
     await callback.answer('🏆 Certificatelar tarqatilmoqda', show_alert=True)
     await sending_certificates(callback.bot, test, certificate_id)
-    await callback.answer('✍ Hisobot Tayorlanmoqda')
     answers = ""
     for k, v in test.answers.items():
         answers += f"{k}-{v.upper()},"
