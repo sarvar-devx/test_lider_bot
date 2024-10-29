@@ -137,6 +137,7 @@ async def check_answer_handler(message: Message, state: FSMContext) -> None:
         await message.answer(
             "<b>❗ Test yakunlangan, javob yuborishda kechikdingiz keyingi testlarda faol bo'lishingizni kutib qolamiz</b>",
             reply_markup=main_keyboard_btn().as_markup(resize_keyboard=True))
+        await state.clear()
         return
 
     user_answer = await TestAnswer.filter(
@@ -226,3 +227,4 @@ async def check_answer_handler(message: Message, state: FSMContext, bot: Bot) ->
                                        test_answers['test_id'])),
                                     InlineKeyboardButton(text='⏰ Yakunlash',
                                                          callback_data='stop_test_' + str(test_answers['test_id']))]]))
+    await state.clear()
