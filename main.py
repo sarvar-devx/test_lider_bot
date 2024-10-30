@@ -6,8 +6,6 @@ from aiogram import Dispatcher, Bot
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.types import BotCommand
-from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
-from aiohttp import web
 
 from config import conf
 from db import database
@@ -24,7 +22,6 @@ async def on_start(bot: Bot):
         BotCommand(command='dasturchi', description="👨🏼‍💻 Dasturchi"),
     ]
     await bot.set_my_commands(commands=commands)
-    await bot.set_webhook(f"{conf.bot.BASE_WEBHOOK_URL}{conf.bot.WEBHOOK_PATH}")
 
 
 async def on_shutdown(dispatcher: Dispatcher, bot: Bot):
@@ -42,15 +39,7 @@ async def main():
         command_router,
     )
     bot = Bot(conf.bot.BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-
-    app = web.Application()
-    webhook_requests_handler = SimpleRequestHandler(
-        dispatcher=dp,
-        bot=bot
-    )
-    webhook_requests_handler.register(app, path=conf.bot.WEBHOOK_PATH)
-    setup_application(app, dp, bot=bot)
-    web.run_app(app, host=conf.bot.WEB_SERVER_HOST, port=conf.bot.WEB_SERVER_PORT)
+    await dp.start_polling(bot)
 
 
 if __name__ == '__main__':
