@@ -32,6 +32,11 @@ class BotConfig(BaseConfig):
     ADMIN_NUMBER = os.getenv('ADMIN_NUMBER')
     CHANNELS = tuple(map(int, os.getenv('CHANNELS').split(',')))
 
+    WEB_SERVER_HOST: str = os.getenv('WEB_SERVER_HOST')
+    WEB_SERVER_PORT: int = int(os.getenv('WEB_SERVER_PORT', 8080))
+    WEBHOOK_PATH = "/webhook"
+    BASE_WEBHOOK_URL = os.getenv('BASE_WEBHOOK_URL')
+
     @property
     def get_admin_list(self):
         return list(map(int, self.ADMIN_LIST.split(',')))
