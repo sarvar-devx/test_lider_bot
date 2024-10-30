@@ -204,14 +204,15 @@ async def sending_certificates_handler(callback: CallbackQuery):
     for k, v in test.answers.items():
         answers += f"{k}-{v.upper()},"
     await create_statistic_test_answers(test, answers)
-    await callback.message.answer('🏆 Certificatelar tarqatildi')
-    await callback.bot.send_document(callback.from_user.id,
-                                     FSInputFile(f"media/test-statistics/{test.id}_natijalar.html"),
-                                     caption=f"""💡 <b>Test yakunlandi!
+    for admin_id in conf.bot.get_admin_list:
+        await callback.bot.send_message(admin_id, '🏆 Certificatelar tarqatildi')
+        await callback.bot.send_document(admin_id,
+                                         FSInputFile(f"media/test-statistics/{test.id}_natijalar.html"),
+                                         caption=f"""💡 <b>Test yakunlandi!
 📝 Test nomi: {test.name}
 🔰 Test kodi</b>: {test.id}
 👨 <b>Test qatnashchilari</b>: {await TestAnswer.count_by(TestAnswer.test_id == test.id)} ta
- <b>Kalitlar</b>: {answers}""")
+<b>Kalitlar</b>: {answers}""")
 
 
 @admin_router.message(F.text == AdminButtons.STATISTIC)
