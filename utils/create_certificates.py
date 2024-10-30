@@ -2,8 +2,10 @@ from datetime import datetime
 
 from PIL import Image, ImageDraw, ImageFont
 from aiogram import Bot
+from aiogram.exceptions import TelegramForbiddenError
 from aiogram.types import FSInputFile
 
+from config import conf
 from db import TestAnswer, Test, Certificate
 
 
@@ -79,5 +81,8 @@ async def sending_certificates(bot: Bot, test: Test, certificate_num: int):
         certificate.save("media/sending_certificate.png")
         try:
             await bot.send_photo(test_answer.user.id, FSInputFile("media/sending_certificate.png"))
-        except Exception as e:
-            print(e)
+        except TelegramForbiddenError as e:
+            for admin_id in conf.bot.get_admin_list:
+                await bot.send_photo(admin_id, FSInputFile("media/sending_certificate.png"),
+                                     caption=str(
+                                         e) + f""" <a href='{f"tg://user?id={test_answer.user.id}" if test_answer.user.username is None else f"https://t.me/{test_answer.user.username}"}'>{"Username mavjud emas" if test_answer.user.username is None else test_answer.user.username}</a>""")
