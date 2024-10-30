@@ -77,4 +77,7 @@ async def sending_certificates(bot: Bot, test: Test, certificate_num: int):
         draw.text(name_position, name, font=name_font, fill=name_color)
 
         certificate.save("media/sending_certificate.png")
-        await bot.send_photo(test_answer.user.id, FSInputFile("media/sending_certificate.png"))
+        try:
+            await bot.send_photo(test_answer.user.id, FSInputFile("media/sending_certificate.png"))
+        except Exception as e:
+            print(e)
