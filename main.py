@@ -69,5 +69,5 @@ def main_webhook():
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
-    # asyncio.run(main_polling())
-    main_webhook()
+    asyncio.run(main_polling())
+    # main_webhook()
