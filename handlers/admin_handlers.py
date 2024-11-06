@@ -179,8 +179,6 @@ async def stop_test_handler(callback: CallbackQuery):
         await callback.answer('❌ Test allaqachon yakunlangan')
         return
 
-    await test.update(test.id, is_active=False)
-
     ikb = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="1", callback_data='certificate_id_1__test_id_' + str(test.id)),
          InlineKeyboardButton(text="2", callback_data='certificate_id_2__test_id_' + str(test.id)),
@@ -195,8 +193,12 @@ async def stop_test_handler(callback: CallbackQuery):
 @admin_router.callback_query(F.data.startswith('certificate_id_'))
 async def sending_certificates_handler(callback: CallbackQuery):
     data = callback.data.split('__')
-    certificate_id = int(data[0][-1])
-    test = await Test.get(int(data[-1][-1]))
+    certificate_id = int(data[0].split("_")[-1])
+    test = await Test.get(int(data[-1].split("_")[-1]))
+    if not test.is_active:
+        await callback.answer('❌ Test allaqachon yakunlangan')
+        return
+    await test.update(test.id, is_active=False)
     await callback.message.edit_reply_markup()
     await callback.answer('🏆 Certificatelar tarqatilmoqda', show_alert=True)
     await sending_certificates(callback.bot, test, certificate_id)
