@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 
+import pytz
 from sqlalchemy import delete as sqlalchemy_delete, update as sqlalchemy_update, select, func, BigInteger, \
     types
 from sqlalchemy.ext.asyncio import AsyncAttrs, create_async_engine, AsyncSession
@@ -113,17 +114,17 @@ class BaseModel(Base, AbstractClass):
 class TimeStamp(types.TypeDecorator):
     impl = types.DateTime(timezone=True)
     cache_ok = True  # Ensure SQLAlchemy can cache this type safely
-    LOCAL_TIMEZONE = datetime.utcnow().astimezone().tzinfo
+    TASHKENT_TIMEZONE = pytz.timezone("Asia/Tashkent")
 
     def process_bind_param(self, value: datetime, dialect):
-        # if value.tzinfo is None:
-        return value.astimezone(self.LOCAL_TIMEZONE)
-        # return value.astimezone(timezone.utc)
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=pytz.utc)  # Agar vaqt zonasi bo'lmasa, UTC'ga o'rnatish
+        return value.astimezone(self.TASHKENT_TIMEZONE)
 
     def process_result_value(self, value, dialect):
-        # if value.tzinfo is None:
-        #     return value.replace(tzinfo=timezone.utc)
-        return value.astimezone()
+        if value is not None:
+            return value.astimezone(self.TASHKENT_TIMEZONE)
+        return value
 
 
 class TimeBaseModel(BaseModel):
