@@ -117,11 +117,16 @@ class TimeStamp(types.TypeDecorator):
     TASHKENT_TIMEZONE = pytz.timezone("Asia/Tashkent")
 
     def process_bind_param(self, value: datetime, dialect):
+        if value is None:
+            return None
+        # Agar vaqt zonasi yo'q bo'lsa, UTC ga o'rnatish va UTC da saqlash
         if value.tzinfo is None:
-            value = value.replace(tzinfo=pytz.utc)  # Agar vaqt zonasi bo'lmasa, UTC'ga o'rnatish
-        return value.astimezone(self.TASHKENT_TIMEZONE)
+            value = value.replace(tzinfo=pytz.utc)
+        # Ma'lumotlar bazasiga UTC da saqlash uchun
+        return value.astimezone(pytz.utc)
 
     def process_result_value(self, value, dialect):
+        # Ma'lumotlar bazasidan UTC da kelgan qiymatni Tashkent vaqtiga aylantirish
         if value is not None:
             return value.astimezone(self.TASHKENT_TIMEZONE)
         return value
