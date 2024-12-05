@@ -55,6 +55,7 @@ def main_webhook():
         main_router,
         command_router,
     )
+
     bot = Bot(conf.bot.BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
     app = web.Application()
