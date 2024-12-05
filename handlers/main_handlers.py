@@ -208,11 +208,18 @@ async def check_answer_handler(message: Message, state: FSMContext, bot: Bot) ->
         quality_level=(len(accepted_answers) / len(test_answers['answers']) * 100)
     )
     user = await User.get(message.from_user.id)
+    answers_text = ""
+    for k, v in test_answers['answers'].items():
+        if accepted_answers.get(k) == v:
+            answers_text += f"{k}✅ "
+        else:
+            answers_text += f"{k}❌ "
     await message.answer(f"""💡 <b>Natijangiz</b>:
 🙎🏻‍♂️ <b>Foydalanuvchi</b>: <a href="tg://user?id={message.from_user.id}">{user.last_name} {user.first_name}</a>
 💻 <b>Test kodi</b>: {test_answers['test_id']}
-✅ <b>To'gri javoblar</b>: {len(accepted_answers)} ta
-❌ <b>Noto'g'ri javoblar</b>: {len(test_answers['answers']) - len(accepted_answers)} ta
+<b>Javoblar</b>: <i><b>{answers_text}</b></i>
+✅ <b>To'gri javoblar soni</b>: {len(accepted_answers)} ta
+❌ <b>Noto'g'ri javoblar soni</b>: {len(test_answers['answers']) - len(accepted_answers)} ta
 📊 <b>Sifat</b>: {created_test_answer.quality_level:.1f}%
 📆 {created_test_answer.created_at.date()} 🕰 {created_test_answer.created_at.hour}:{created_test_answer.created_at.minute}""",
                          reply_markup=main_keyboard_btn().as_markup(resize_keyboard=True))
@@ -220,7 +227,8 @@ async def check_answer_handler(message: Message, state: FSMContext, bot: Bot) ->
     for admin_id in conf.bot.get_admin_list:
         await bot.send_message(admin_id,
                                f"""{test_answers['test_id']} <b>kodli testda </b><b><a href="tg://user?id={message.from_user.id}">{user.last_name} {user.first_name}</a>  qatnashdi!</b> 
-✅ <b>Natija(to'gri javob)</b>: {len(accepted_answers)} ta
+<b>Javoblar</b>: <i><b>{answers_text}</b></i>
+✅ <b>Natija(to'gri javob soni)</b>: {len(accepted_answers)} ta
 🎯 <b>Sifat darajasi</b>: {created_test_answer.quality_level:.1f}%
 ⏱️ <b>{created_test_answer.created_at.date()} {created_test_answer.created_at.hour}:{created_test_answer.created_at.minute}</b>""",
                                reply_markup=InlineKeyboardMarkup(inline_keyboard=[

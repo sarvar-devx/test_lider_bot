@@ -19,7 +19,7 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
 @command_router.message(Command(commands='dasturchi'))
 async def dev_command_handler(message: Message) -> None:
     await message.answer(
-        '👨🏼‍💻 <a href="https://t.me/sarvar_py_dev">Dasturchi:</a> <a href="https://github.com/sarvar-py-dev">Sarvarbek</a>')
+        '👨🏼‍💻 <a href="https://t.me/sarvar_devx">Dasturchi:</a> <a href="https://github.com/sarvar-devx">Sarvarbek</a>')
 
 
 @command_router.message(Command(commands='myinfo'))
