@@ -32,3 +32,8 @@ class CheckTestAnswersStates(StatesGroup):
     test_id = State()
     user_answers = State()
     answers = State()
+
+
+class CreateReferralStyleStates(StatesGroup):
+    photo = State()
+    description = State()

@@ -10,12 +10,13 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from config import conf
 from db import Test, TestAnswer, User
+from db.models import ReferralMessage
 from utils.create_certificates import sending_certificates
 from utils.filters import IsAdminFilter
 from utils.keyboard import admin_keyboard_btn, AdminButtons, UserButtons
 from utils.middlware import make_channels_button
-from utils.services import create_test_send_answers, create_statistic_test_answers
-from utils.states import NewsStates, CreateTestStates
+from utils.services import create_test_send_answers, create_statistic_test_answers, referral_user
+from utils.states import NewsStates, CreateTestStates, CreateReferralStyleStates
 
 admin_router = Router()
 admin_router.message.filter(IsAdminFilter())
@@ -150,7 +151,7 @@ async def confirm_creating_test_handler(callback: CallbackQuery, state: FSMConte
 @admin_router.callback_query(F.data.startswith('dont_create'))
 async def dont_create_test_handler(callback: CallbackQuery, state: FSMContext):
     await callback.message.edit_reply_markup()
-    await callback.message.answer('❌ Test Yaratilmadi')
+    await callback.answer('❌ Jarayon tasdiqlanmadi va yaratilmadi', show_alert=True)
     await command_start_handler(callback.message, state)
 
 
@@ -247,6 +248,65 @@ async def tests_handler(callback: CallbackQuery):
             [InlineKeyboardButton(text="📊 Holat", callback_data='test_statistics_' + str(test.id)),
              InlineKeyboardButton(text='⏰ Yakunlash', callback_data='stop_test_' + str(test.id))]])
     await callback.message.answer(text, reply_markup=ikb)
+
+
+@admin_router.message(F.text == AdminButtons.REFERRAL_USER_STYLE)
+async def referral_user_style_handler(message: Message, state: FSMContext):
+    await message.answer(
+        'Referral userni qanday yuborish kerak rasmni 🖼 kiriting!!!',
+        reply_markup=ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text=UserButtons.BACK)]],
+                                         resize_keyboard=True))
+    await state.set_state(CreateReferralStyleStates.photo)
+
+
+@admin_router.message(CreateReferralStyleStates.photo)
+async def referral_style_photo_handler(message: Message, state: FSMContext):
+    if not message.photo:
+        await message.answer('Nimadir hato ketdi qaytadan urinib ko\'ring')
+        await referral_user_style_handler(message, state)
+        return
+    await state.update_data(photo=message.photo[-1].file_id)
+    await message.answer('Endi esa tavsifini kiriting 🗒')
+    await state.set_state(CreateReferralStyleStates.description)
+
+
+@admin_router.message(CreateReferralStyleStates.description)
+async def referral_style_message_handler(message: Message, state: FSMContext):
+    await state.update_data(description=message.html_text)
+    ikb = InlineKeyboardMarkup(
+        inline_keyboard=[[InlineKeyboardButton(text='✅ Ha', callback_data='confirm_creating_referral_style'),
+                          InlineKeyboardButton(text="❌ Yo'q", callback_data='dont_create')]])
+    data = await state.get_data()
+    await message.bot.send_photo(message.chat.id, data['photo'], caption=data[
+                                                                             'description'] + f"""\n\n👉🏻 <a href="https://t.me/{conf.bot.BOT_USERNAME}?start={message.from_user.id}">Havola ustiga bosing</a> 👈🏻
+👉🏻 <a href="https://t.me/{conf.bot.BOT_USERNAME}?start={message.from_user.id}">Havola ustiga bosing</a> 👈🏻
+👉🏻 <a href="https://t.me/{conf.bot.BOT_USERNAME}?start={message.from_user.id}">Havola ustiga bosing</a> 👈🏻""" + "\n\n\n Tasdiqlaysizmi",
+                                 reply_markup=ikb)
+
+
+@admin_router.callback_query(F.data.startswith('confirm_creating_referral_style'))
+async def create_referral_style_handler(callback: CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    if data.get('photo') is None or data.get('description') is None:
+        await callback.answer('❌ Jarayon amalga oshmadi, bu o\'z vaqtida tasdiqlanmagan', show_alert=True)
+        await callback.message.delete()
+        await command_start_handler(callback.message, state)
+        return
+
+    if referral_messages := await ReferralMessage.all():
+        await ReferralMessage.delete(referral_messages[0].id)
+    await ReferralMessage.create(**data)
+    await callback.message.edit_reply_markup()
+    await callback.answer('tasdiqlandi ✅', show_alert=True)
+    await command_start_handler(callback.message, state)
+
+
+@admin_router.message(F.text == AdminButtons.REFERRAL_USER)
+async def referral_user_admin_handler(message: Message):
+    users = await User.all()
+    for user in users:
+        await referral_user(message, user.id)
+    await message.answer("Barcha userlarga odam yig'ishi uchun link tarqatildi")
 
 
 @admin_router.message(F.text == AdminButtons.USERS)

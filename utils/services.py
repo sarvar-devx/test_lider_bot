@@ -1,7 +1,10 @@
+from aiogram import Bot
+from aiogram.exceptions import TelegramForbiddenError
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, ReplyKeyboardRemove
 
-from db import TestAnswer, Test
+from config import conf
+from db import TestAnswer, Test, ReferralMessage
 from utils.keyboard import main_keyboard_btn
 from utils.states import UserStates, CreateTestStates, CheckTestAnswersStates
 
@@ -34,6 +37,21 @@ async def create_test_send_answers(message: Message, state: FSMContext) -> None:
 async def create_test_answers_send_user_answers(message: Message, state: FSMContext, sending_text: str) -> None:
     await message.answer(sending_text + "\n<blockquote>Format: abcd... yoki 1a2b3c4d...</blockquote>")
     await state.set_state(CheckTestAnswersStates.user_answers)
+
+
+async def referral_user(message: Message, user_id) -> None:
+    data: ReferralMessage = (await ReferralMessage.all())[0]
+    try:
+        await message.bot.send_photo(user_id, data.photo,
+                                     caption=data.description + f"""\n\n👉🏻 <a href="https://t.me/{conf.bot.BOT_USERNAME}?start={user_id}">Havola ustiga bosing</a> 👈🏻
+👉🏻 <a href="https://t.me/{conf.bot.BOT_USERNAME}?start={user_id}">Havola ustiga bosing</a> 👈🏻
+👉🏻 <a href="https://t.me/{conf.bot.BOT_USERNAME}?start={user_id}">Havola ustiga bosing</a> 👈🏻""")
+        await message.bot.send_message(user_id, """🔝 <b>YUQORIDAGI POSTNI</b> do'stlaringizga yuboring.
+
+<u><b>5 ta</b></u> do'stingiz sizning taklif havolingiz orqali <b>BOTga</b> kirib, kanallarga a'zo bo'lib, ro'yxatdan o'tsa, bot sizga <b>OLIMPIADA boʻladigan kanal</b> uchun bir martalik link beradi.""")
+    except TelegramForbiddenError as e:
+        await message.answer(
+            str(e) + f""" id: <a href='tg://user?id={user_id}'>{user_id}</a> botni block qilgani uchun habar ushbu userga yuborilmadi""")
 
 
 async def create_statistic_test_answers(test: Test, answers):
@@ -72,7 +90,7 @@ async def create_statistic_test_answers(test: Test, answers):
 """ + f"""<body>
 <div class="body">
 
-    </br><b>Ushbu hisobot <a href="https://t.me/Eng_Math_Piima_bot"><font color='red'>@Eng_Math_Piima_bot</font></a> orqali
+    </br><b>Ushbu hisobot <a href="https://t.me/{conf.bot.BOT_USERNAME}"><font color='red'>@{conf.bot.BOT_USERNAME}</font></a> orqali
     tayyorlandi.</b></br>
     <b>Test muallifi:</b> Xumoyun Abdusamatov <br>
 

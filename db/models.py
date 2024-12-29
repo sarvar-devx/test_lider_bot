@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, BIGINT, String, ForeignKey, JSON, select, asc, Float, desc
+from sqlalchemy import Boolean, BIGINT, String, ForeignKey, JSON, select, asc, Float, desc, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship, selectinload
 
 from db.base import TimeBaseModel, BaseModel, db
@@ -44,3 +44,8 @@ class TestAnswer(TimeBaseModel):
         )
 
         return (await db.execute(query)).scalars().all()
+
+
+class ReferralMessage(TimeBaseModel):
+    photo: Mapped[str] = mapped_column(Text())
+    description: Mapped[str] = mapped_column(Text())

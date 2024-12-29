@@ -4,6 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, KeyboardButton
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
+from config import conf
 from db import User, TestAnswer
 from utils.keyboard import UserButtons
 from utils.services import greeting_user
@@ -50,6 +51,6 @@ Tugmalar:
 
 @command_router.message()
 async def any(message: Message):
-    await message.answer("""<a href="https://t.me/Eng_Math_Piima_bot">@Eng_Math_Piima_bot</a>
+    await message.answer(f"""<a href="https://t.me/{conf.bot.BOT_USERNAME}">@{conf.bot.BOT_USERNAME}</a>
 
 <i>Foydalanish bo'yicha to'liq ma'lumot olish uchun /help buyrug'idan foydalaning</i>""")

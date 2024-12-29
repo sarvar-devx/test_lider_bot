@@ -7,11 +7,12 @@ from aiogram.types import Message, CallbackQuery, ReplyKeyboardRemove, ReplyKeyb
 
 from config import conf
 from db import User, Test, TestAnswer
+from db.models import ReferralMessage
 from handlers.admin_handlers import back_admin_menu_handler
 from handlers.command_handlers import myinfo_command_handler
 from utils.keyboard import main_keyboard_btn, phone_number_rkb, UserButtons
 from utils.services import greeting_user, wrong_first_last_name, send_last_name, send_first_name, \
-    create_test_answers_send_user_answers
+    create_test_answers_send_user_answers, referral_user
 from utils.states import UserStates, ChangeLastNameStates, ChangeFirstNameStates, CheckTestAnswersStates
 
 main_router = Router()
@@ -237,3 +238,8 @@ async def check_answer_handler(message: Message, state: FSMContext, bot: Bot) ->
                                     InlineKeyboardButton(text='⏰ Yakunlash',
                                                          callback_data='stop_test_' + str(test_answers['test_id']))]]))
     await state.clear()
+
+
+@main_router.message(F.text == UserButtons.REFERRAL_USER)
+async def referral_user_handler(message: Message):
+    await referral_user(message, message.from_user.id)

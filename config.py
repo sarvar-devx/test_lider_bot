@@ -28,6 +28,7 @@ class DatabaseConfig(BaseConfig):
 @dataclass
 class BotConfig(BaseConfig):
     BOT_TOKEN: str = os.getenv('BOT_TOKEN')
+    BOT_USERNAME: str = os.getenv('BOT_USERNAME')
     ADMIN_LIST: str = os.getenv('ADMIN_LIST')
     ADMIN_NUMBER = os.getenv('ADMIN_NUMBER')
     CHANNELS = tuple(map(int, os.getenv('CHANNELS').split(',')))
