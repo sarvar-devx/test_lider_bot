@@ -25,6 +25,22 @@ class SubscriptionMiddleware(BaseMiddleware):
         message = update.event
         if type(message) is not Message:
             message = message.message
+
+        user = await User.get(update.event.from_user.id)
+        if not user:
+            user = await User.create(id=update.event.from_user.id, username=update.event.from_user.username,
+                                     first_name=update.event.from_user.first_name,
+                                     last_name=update.event.from_user.last_name)
+            message_texts = message.text.split()
+            if len(message_texts) == 2 and message.text.startswith('/start') and message_texts[-1].isdigit():
+                ref_user = await User.get(int(message_texts[-1]))
+                if ref_user:
+                    await User.update(user.id, referral_user_id=ref_user.id)
+                    if (await User.count_by(User.referral_user_id == ref_user.id)) % 5 == 0:
+                        await message.bot.send_message(ref_user.id,
+                                                       "🎉 <b>Tabriklaymiz!</b>\n\n👏 Siz 5 ta do'stingizni taklif qilganingiz uchun sizga maxsus bir martalik havola beramiz! 🥳✨")
+                        await create_one_time_channel_link(ref_user.id, message.bot)
+
         unsubscribe_channels = [channel_id for channel_id in conf.bot.CHANNELS if (
             await update.bot.get_chat_member(channel_id, update.event.from_user.id)).status == ChatMemberStatus.LEFT]
         if unsubscribe_channels:
