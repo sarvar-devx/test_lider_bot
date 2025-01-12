@@ -1,7 +1,7 @@
 from aiogram import Bot
 from aiogram.exceptions import TelegramForbiddenError
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, ReplyKeyboardRemove
+from aiogram.types import Message, ReplyKeyboardRemove, ChatInviteLink
 
 from config import conf
 from db import TestAnswer, Test, ReferralMessage
@@ -37,6 +37,19 @@ async def create_test_send_answers(message: Message, state: FSMContext) -> None:
 async def create_test_answers_send_user_answers(message: Message, state: FSMContext, sending_text: str) -> None:
     await message.answer(sending_text + "\n<blockquote>Format: abcd... yoki 1a2b3c4d...</blockquote>")
     await state.set_state(CheckTestAnswersStates.user_answers)
+
+
+async def create_one_time_channel_link(user_id: int, bot: Bot) -> None:
+    invite_link: ChatInviteLink = await bot.create_chat_invite_link(
+        chat_id=conf.bot.OLYMPIAD_CHANNEL_ID,
+        expire_date=None,
+        member_limit=1
+    )
+    await bot.send_message(user_id,
+                           f"""🔗 <b>Siz uchun maxsus OLIMPIADA boʻladigan kanal uchun bir martalik taklif havolasi!</b>\n
+🎉 <b>Havola:</b> <a href='{invite_link.invite_link}'>👉 Bu yerni bosing</a>\n
+❗ <i>Diqqat:</i> Ushbu havola faqat <b>bir marta</b> ishlatilishi mumkin.
+⏳ Uni boshqa birovdan oldin ishlatishni unutmang!""")
 
 
 async def referral_user(message: Message, user_id) -> None:
@@ -92,7 +105,6 @@ async def create_statistic_test_answers(test: Test, answers):
 
     </br><b>Ushbu hisobot <a href="https://t.me/{conf.bot.BOT_USERNAME}"><font color='red'>@{conf.bot.BOT_USERNAME}</font></a> orqali
     tayyorlandi.</b></br>
-    <b>Test muallifi:</b> Xumoyun Abdusamatov <br>
 
     <b>Test kodi:</b> {test.id} </br>
     <b>Savollar soni:</b> {len(test.answers)} ta </br></br>

@@ -7,7 +7,6 @@ from aiogram.types import Message, CallbackQuery, ReplyKeyboardRemove, ReplyKeyb
 
 from config import conf
 from db import User, Test, TestAnswer
-from db.models import ReferralMessage
 from handlers.admin_handlers import back_admin_menu_handler
 from handlers.command_handlers import myinfo_command_handler
 from utils.keyboard import main_keyboard_btn, phone_number_rkb, UserButtons
@@ -55,11 +54,9 @@ async def phone_number_handler(message: Message, state: FSMContext) -> None:
     phone_number = message.contact.phone_number[-9:]
     user_data = await state.get_data()
     user_data.update({
-        'id': message.from_user.id,
-        'username': message.from_user.username,
         'phone_number': phone_number,
     })
-    await User.create(**user_data)
+    await User.update(message.from_user.id, **user_data)
     if message.from_user.id in conf.bot.get_admin_list:
         await back_admin_menu_handler(message, state)
         return

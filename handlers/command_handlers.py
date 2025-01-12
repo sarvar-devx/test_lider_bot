@@ -45,7 +45,8 @@ async def help_command_handler(message: Message) -> None:
 Tugmalar:
 <i>{UserButtons.CHECK_ANSWER}</i> - Botga kiritilgan testlarni javoblarini kiritish\n
 <i>{UserButtons.ADMIN}</i> - Admin bilan bog'lanish \n
-<i>Agar sizda qandaydir muammo bulsa yoki savollaringiz bulsa <a href='https://t.me/Abdusamatov_Xumoyun'>Admin</a> ga murojat qiling</i>
+<i>{UserButtons.REFERRAL_USER}</i> - Do'stlaringizni taklif qiling va bot sizga OLIMPIADA boʻladigan kanal uchun bir martalik link beradi\n
+<i>Agar sizda qandaydir muammo bulsa yoki savollaringiz bulsa <a href='https://t.me/Xumoyun_a'>Admin</a> ga murojat qiling</i>
 ''')
 
 

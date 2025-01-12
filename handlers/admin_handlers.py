@@ -1,11 +1,11 @@
 import re
 
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, InlineKeyboardMarkup, ReplyKeyboardRemove, InlineKeyboardButton, CallbackQuery, \
-    ReplyKeyboardMarkup, KeyboardButton, FSInputFile, document
+    ReplyKeyboardMarkup, KeyboardButton, FSInputFile, ChatInviteLink
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from config import conf
@@ -15,7 +15,8 @@ from utils.create_certificates import sending_certificates
 from utils.filters import IsAdminFilter
 from utils.keyboard import admin_keyboard_btn, AdminButtons, UserButtons
 from utils.middlware import make_channels_button
-from utils.services import create_test_send_answers, create_statistic_test_answers, referral_user
+from utils.services import create_test_send_answers, create_statistic_test_answers, referral_user, \
+    create_one_time_channel_link
 from utils.states import NewsStates, CreateTestStates, CreateReferralStyleStates
 
 admin_router = Router()
@@ -307,6 +308,11 @@ async def referral_user_admin_handler(message: Message):
     for user in users:
         await referral_user(message, user.id)
     await message.answer("Barcha userlarga odam yig'ishi uchun link tarqatildi")
+
+
+@admin_router.message(F.text == AdminButtons.OLYMPIAD_CHANNEL_BUTTON)
+async def one_time_link_handler(message: Message, bot: Bot):
+    await create_one_time_channel_link(message.from_user.id, bot)
 
 
 @admin_router.message(F.text == AdminButtons.USERS)

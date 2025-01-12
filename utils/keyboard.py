@@ -20,6 +20,7 @@ class AdminButtons:
     SKIP = "⏭️ O'tkazib yuborish"
     REFERRAL_USER_STYLE = '👬👨‍👩‍👦‍👦 Referral user stili'
     REFERRAL_USER = "👬 Do\'stlarni taklif qilish"
+    OLYMPIAD_CHANNEL_BUTTON = "🚀 Bir martalik taklif"
 
 
 def main_keyboard_btn(**kwargs):
@@ -39,6 +40,7 @@ def admin_keyboard_btn(**kwargs):
     keyboard_btn.row(KeyboardButton(text=AdminButtons.USERS, **kwargs))
     keyboard_btn.row(KeyboardButton(text=AdminButtons.REFERRAL_USER_STYLE, **kwargs))
     keyboard_btn.row(KeyboardButton(text=AdminButtons.REFERRAL_USER, **kwargs))
+    keyboard_btn.row(KeyboardButton(text=AdminButtons.OLYMPIAD_CHANNEL_BUTTON, **kwargs))
     keyboard_btn.adjust(2, repeat=True)
     return keyboard_btn
 

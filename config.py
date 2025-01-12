@@ -32,6 +32,7 @@ class BotConfig(BaseConfig):
     ADMIN_LIST: str = os.getenv('ADMIN_LIST')
     ADMIN_NUMBER = os.getenv('ADMIN_NUMBER')
     CHANNELS = tuple(map(int, os.getenv('CHANNELS').split(',')))
+    OLYMPIAD_CHANNEL_ID = os.getenv('OLYMPIAD_CHANNEL_ID')
 
     WEB_SERVER_HOST: str = os.getenv('WEB_SERVER_HOST')
     WEB_SERVER_PORT: int = int(os.getenv('WEB_SERVER_PORT', 8080))
