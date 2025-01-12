@@ -8,7 +8,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from config import conf
 from db import User
-from utils.services import send_first_name
+from utils.services import send_first_name, create_one_time_channel_link
 
 
 async def make_channels_button(channel_ids: Iterable, bot: Bot):
@@ -48,12 +48,10 @@ class SubscriptionMiddleware(BaseMiddleware):
             ikb.row(InlineKeyboardButton(text='✅ Tasdiqlash',
                                          callback_data='channel_confirm__' + str(message.message_id)))
             await message.answer("Botni foydalanishdan oldin kannalarga a'zo bo'ling",
-                                      reply_markup=ikb.as_markup())
+                                 reply_markup=ikb.as_markup())
             return
 
-        user = await User.get(update.event.from_user.id)
-        if not user and not await data['state'].get_state():
+        if not user.phone_number and not await data['state'].get_state():
             await send_first_name(message, data['state'])
             return
-
         return await handler(update, data)
