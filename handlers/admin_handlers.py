@@ -318,7 +318,7 @@ async def one_time_link_handler(message: Message, bot: Bot):
 @admin_router.message(F.text == AdminButtons.USERS)
 async def send_users_info(message: Message):
     users = await User.all()
-    admins = await User.filter(User.id.in_(conf.bot.get_admin_list))
+    admins = [user for user in users if user.id in conf.bot.get_admin_list]
     admins_str = ""
     for i, admin in enumerate(admins, 1):
         admins_str += f"""<tr>
