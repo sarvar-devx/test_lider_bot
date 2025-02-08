@@ -25,7 +25,7 @@ async def back_menu_handler(message: Message, state: FSMContext):
 
 @main_router.message(UserStates.first_name)
 async def first_name_handler(message: Message, state: FSMContext) -> None:
-    if not message.text.isalpha():
+    if not message.text or not message.text.isalpha():
         await wrong_first_last_name(message)
         await send_first_name(message, state)
         return
