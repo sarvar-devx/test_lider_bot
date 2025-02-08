@@ -10,8 +10,8 @@ from db import User, Test, TestAnswer
 from handlers.admin_handlers import back_admin_menu_handler
 from handlers.command_handlers import myinfo_command_handler
 from utils.keyboard import main_keyboard_btn, phone_number_rkb, UserButtons
-from utils.services import greeting_user, wrong_first_last_name, send_last_name, send_first_name, \
-    create_test_answers_send_user_answers, referral_user
+from utils.services import greeting_user, send_last_name, send_first_name, \
+    create_test_answers_send_user_answers, referral_user, validate_name_input
 from utils.states import UserStates, ChangeLastNameStates, ChangeFirstNameStates, CheckTestAnswersStates
 
 main_router = Router()
@@ -25,23 +25,19 @@ async def back_menu_handler(message: Message, state: FSMContext):
 
 @main_router.message(UserStates.first_name)
 async def first_name_handler(message: Message, state: FSMContext) -> None:
-    if not message.text or not message.text.isalpha():
-        await wrong_first_last_name(message)
-        await send_first_name(message, state)
+    if not await validate_name_input(message, send_first_name, state):
         return
 
     await send_last_name(message, state)
-    await state.update_data(first_name=message.text)
+    await state.update_data(first_name=message.text.title())
 
 
 @main_router.message(UserStates.last_name)
 async def last_name_handler(message: Message, state: FSMContext) -> None:
-    if not message.text.isalpha():
-        await wrong_first_last_name(message)
-        await send_last_name(message, state)
+    if not await validate_name_input(message, send_last_name, state):
         return
 
-    await state.update_data(last_name=message.text)
+    await state.update_data(last_name=message.text.title())
     await message.answer('📞 <b>Telefon raqamingizni yuboring.</b>', reply_markup=phone_number_rkb)
     await state.set_state(UserStates.phone_number)
 
@@ -85,14 +81,12 @@ async def send_first_name_handler(message: Message, state: FSMContext) -> None:
 
 @main_router.message(ChangeFirstNameStates.first_name)
 async def change_first_name_handler(message: Message, state: FSMContext) -> None:
-    if not message.text.isalpha():
-        await wrong_first_last_name(message)
-        await send_first_name_handler(message, state)
+    if not await validate_name_input(message, send_first_name_handler, state):
         return
 
-    await User.update(message.from_user.id, first_name=message.text)
+    await User.update(message.from_user.id, first_name=message.text.title())
     await message.answer(
-        f"Hurmatli <a href='tg://user?id={message.from_user.id}'>{message.from_user.full_name}</a> sizning ismingiz {message.text} ga uzgartirildi!")
+        f"Hurmatli <a href='tg://user?id={message.from_user.id}'>{message.from_user.full_name}</a> sizning ismingiz {message.text.title()} ga uzgartirildi!")
     await myinfo_command_handler(message)
     await state.clear()
 
@@ -105,14 +99,12 @@ async def send_last_name_handler(message: Message, state: FSMContext) -> None:
 
 @main_router.message(ChangeLastNameStates.last_name)
 async def change_last_name_handler(message: Message, state: FSMContext) -> None:
-    if not message.text.isalpha():
-        await wrong_first_last_name(message)
-        await send_last_name_handler(message, state)
+    if not await validate_name_input(message, send_last_name_handler, state):
         return
 
-    await User.update(message.from_user.id, last_name=message.text)
+    await User.update(message.from_user.id, last_name=message.text.title())
     await message.answer(
-        f"Hurmatli <a href='tg://user?id={message.from_user.id}'>{message.from_user.full_name}</a> sizning familiyangiz {message.text} ga uzgartirildi!")
+        f"Hurmatli <a href='tg://user?id={message.from_user.id}'>{message.from_user.full_name}</a> sizning familiyangiz {message.text.title()} ga uzgartirildi!")
     await myinfo_command_handler(message)
     await state.clear()
 

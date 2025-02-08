@@ -1,3 +1,5 @@
+from typing import Callable
+
 from aiogram import Bot
 from aiogram.exceptions import TelegramForbiddenError
 from aiogram.fsm.context import FSMContext
@@ -27,6 +29,14 @@ async def send_first_name(message: Message, state: FSMContext) -> None:
 async def send_last_name(message: Message, state: FSMContext) -> None:
     await message.answer('✍ <b>Familiyangizni kiriting.</b>')
     await state.set_state(UserStates.last_name)
+
+
+async def validate_name_input(message: Message, retry_function: Callable, state: FSMContext = None) -> bool:
+    if not message.text or not message.text.isalpha():
+        await wrong_first_last_name(message)
+        await retry_function(message, state)
+        return False
+    return True
 
 
 async def create_test_send_answers(message: Message, state: FSMContext) -> None:
