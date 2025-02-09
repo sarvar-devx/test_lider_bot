@@ -37,6 +37,38 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
     await state.clear()
 
 
+@admin_router.message(Command(commands='elon'))
+async def elon_command_handler(message: Message, state: FSMContext) -> None:
+    await message.answer('Elonni Kiriting', reply_markup=ReplyKeyboardRemove())
+    await state.set_state(NotificationStates.notification)
+
+
+@admin_router.message(NotificationStates.notification)
+async def notification_handler(message: Message, state: FSMContext) -> None:
+    ikb = InlineKeyboardMarkup(
+        inline_keyboard=[[InlineKeyboardButton(text='✅ Ha', callback_data=f'confirm_notification_{message.message_id}'),
+                          InlineKeyboardButton(text="❌ Yo'q", callback_data='dont_confirm')]])
+    await message.reply("Bu elonni tasdiqlaysizmi", reply_markup=ikb)
+    await state.clear()
+
+
+@admin_router.callback_query(F.data.startswith('confirm_notification'))
+async def confirm_notification_handler(callback: CallbackQuery, state: FSMContext) -> None:
+    message_id = callback.data.split('_')[-1]
+    users = await User.all()
+    for user in users:
+        try:
+            await callback.bot.copy_message(chat_id=user.id, from_chat_id=callback.message.chat.id,
+                                            message_id=int(message_id))
+        except TelegramForbiddenError as e:
+            await callback.message.answer(
+                f"""{e} id: <a href='tg://user?id={user.id}'>{user.id}</a> botni block qilgani uchun habar ushbu foydalanuvchiga yuborilmadi""")
+
+    await callback.message.edit_reply_markup()
+    await callback.message.answer("Elon barcha foydalanuvchilarga tarqatildi")
+    await command_start_handler(callback.message, state)
+
+
 @admin_router.message(F.text == AdminButtons.TO_ANNOUNCE)
 async def news_handler(message: Message, state: FSMContext) -> None:
     await message.answer('Elonni Kiriting', reply_markup=ReplyKeyboardRemove())
