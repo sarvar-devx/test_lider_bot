@@ -11,6 +11,10 @@ class NewsStates(StatesGroup):
     news = State()
 
 
+class NotificationStates(StatesGroup):
+    notification = State()
+
+
 class ChangeFirstNameStates(StatesGroup):
     first_name = State()
 
