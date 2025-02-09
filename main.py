@@ -17,7 +17,7 @@ from utils.middlware import SubscriptionMiddleware
 
 async def on_start(bot: Bot):
     await database.create_all()
-    commands = [
+    user_commands = [
         BotCommand(command='start', description="🏁 Bo'tni ishga tushirish"),
         BotCommand(command='myinfo', description="📝 Mening malumotlarim"),
         BotCommand(command='help', description="🆘 yordam"),
