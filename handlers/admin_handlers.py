@@ -2,10 +2,11 @@ import re
 
 from aiogram import Router, F, Bot
 from aiogram.enums import ParseMode
-from aiogram.filters import CommandStart
+from aiogram.exceptions import TelegramForbiddenError
+from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, InlineKeyboardMarkup, ReplyKeyboardRemove, InlineKeyboardButton, CallbackQuery, \
-    ReplyKeyboardMarkup, KeyboardButton, FSInputFile, ChatInviteLink
+    ReplyKeyboardMarkup, KeyboardButton, FSInputFile
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from config import conf
@@ -17,7 +18,7 @@ from utils.keyboard import admin_keyboard_btn, AdminButtons, UserButtons
 from utils.middlware import make_channels_button
 from utils.services import create_test_send_answers, create_statistic_test_answers, referral_user, \
     create_one_time_channel_link
-from utils.states import NewsStates, CreateTestStates, CreateReferralStyleStates
+from utils.states import NewsStates, CreateTestStates, CreateReferralStyleStates, NotificationStates
 
 admin_router = Router()
 admin_router.message.filter(IsAdminFilter())
@@ -78,9 +79,9 @@ async def news_handler(message: Message, state: FSMContext) -> None:
 @admin_router.message(NewsStates.news)
 async def confirm_handler(message: Message, state: FSMContext) -> None:
     ikb = InlineKeyboardMarkup(
-        inline_keyboard=[[InlineKeyboardButton(text='✅ Ha', callback_data='confirm_news_' + str(message.message_id)),
+        inline_keyboard=[[InlineKeyboardButton(text='✅ Ha', callback_data=f'confirm_news_{message.message_id}'),
                           InlineKeyboardButton(text="❌ Yo'q", callback_data='dont_confirm')]])
-    await message.answer('Bu elonni tasdiqlaysizmi', reply_markup=ikb, reply_to_message_id=message.message_id)
+    await message.reply('Bu elonni tasdiqlaysizmi', reply_markup=ikb)
     await state.clear()
 
 
@@ -214,10 +215,10 @@ async def stop_test_handler(callback: CallbackQuery):
         return
 
     ikb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="1", callback_data='certificate_id_1__test_id_' + str(test.id)),
-         InlineKeyboardButton(text="2", callback_data='certificate_id_2__test_id_' + str(test.id)),
-         InlineKeyboardButton(text="3", callback_data='certificate_id_3__test_id_' + str(test.id)),
-         InlineKeyboardButton(text="4", callback_data='certificate_id_4__test_id_' + str(test.id))]
+        [InlineKeyboardButton(text="1", callback_data=f'certificate_id_1__test_id_{test.id}'),
+         InlineKeyboardButton(text="2", callback_data=f'certificate_id_2__test_id_{test.id}'),
+         InlineKeyboardButton(text="3", callback_data=f'certificate_id_3__test_id_{test.id}'),
+         InlineKeyboardButton(text="4", callback_data=f'certificate_id_4__test_id_{test.id}')]
     ])
     await callback.bot.send_photo(callback.from_user.id, FSInputFile('media/certificate_types/certificates.png'),
                                   caption="🏆 Certificateni tanlang",
@@ -256,7 +257,7 @@ async def statistics_handler(message: Message):
     tests = await Test.all()
     ikb = InlineKeyboardBuilder()
     for test in tests:
-        ikb.row(InlineKeyboardButton(text=test.name, callback_data="test_id" + str(test.id)))
+        ikb.row(InlineKeyboardButton(text=test.name, callback_data=f"test_id{test.id}"))
     ikb.adjust(2)
     await message.answer('Testlar', reply_markup=ikb.as_markup())
 
@@ -275,11 +276,11 @@ async def tests_handler(callback: CallbackQuery):
     if not test.is_active:
         text += "\n❌ Test yakunlangan"
         ikb = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="📊 Holat", callback_data='test_statistics_' + str(test.id))]])
+            [InlineKeyboardButton(text="📊 Holat", callback_data=f'test_statistics_{test.id}')]])
     else:
         ikb = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="📊 Holat", callback_data='test_statistics_' + str(test.id)),
-             InlineKeyboardButton(text='⏰ Yakunlash', callback_data='stop_test_' + str(test.id))]])
+            [InlineKeyboardButton(text="📊 Holat", callback_data=f'test_statistics_{test.id}'),
+             InlineKeyboardButton(text='⏰ Yakunlash', callback_data=f'stop_test_{test.id}')]])
     await callback.message.answer(text, reply_markup=ikb)
 
 
