@@ -84,5 +84,4 @@ async def sending_certificates(bot: Bot, test: Test, certificate_num: int):
         except TelegramForbiddenError as e:
             for admin_id in conf.bot.get_admin_list:
                 await bot.send_photo(admin_id, FSInputFile("media/sending_certificate.png"),
-                                     caption=str(
-                                         e) + f""" <a href='{f"tg://user?id={test_answer.user.id}" if test_answer.user.username is None else f"https://t.me/{test_answer.user.username}"}'>{"Username mavjud emas" if test_answer.user.username is None else test_answer.user.username}</a>""")
+                                     caption=f"""{e} <a href='{f"tg://user?id={test_answer.user.id}" if test_answer.user.username is None else f"https://t.me/{test_answer.user.username}"}'>{"Username mavjud emas" if test_answer.user.username is None else test_answer.user.username}</a>""")

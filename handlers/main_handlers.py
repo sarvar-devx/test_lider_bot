@@ -222,10 +222,10 @@ async def check_answer_handler(message: Message, state: FSMContext, bot: Bot) ->
 🎯 <b>Sifat darajasi</b>: {created_test_answer.quality_level:.1f}%
 ⏱️ <b>{created_test_answer.created_at.date()} {created_test_answer.created_at.hour}:{created_test_answer.created_at.minute}</b>""",
                                reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                                   [InlineKeyboardButton(text="📊 Holat", callback_data='test_statistics_' + str(
-                                       test_answers['test_id'])),
+                                   [InlineKeyboardButton(text="📊 Holat",
+                                                         callback_data=f'test_statistics_{test_answers["test_id"]}'),
                                     InlineKeyboardButton(text='⏰ Yakunlash',
-                                                         callback_data='stop_test_' + str(test_answers['test_id']))]]))
+                                                         callback_data=f'stop_test_{test_answers["test_id"]}')]]))
     await state.clear()
 
 

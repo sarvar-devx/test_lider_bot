@@ -73,8 +73,7 @@ async def referral_user(message: Message, user_id) -> None:
 
 <u><b>5 ta</b></u> do'stingiz sizning taklif havolingiz orqali <b>BOTga</b> kirib, kanallarga a'zo bo'lib, ro'yxatdan o'tsa, bot sizga <b>OLIMPIADA boʻladigan kanal</b> uchun bir martalik link beradi.""")
     except TelegramForbiddenError as e:
-        await message.answer(
-            str(e) + f""" id: <a href='tg://user?id={user_id}'>{user_id}</a> botni block qilgani uchun habar ushbu userga yuborilmadi""")
+        await message.answer(f"""{e} id: <a href='tg://user?id={user_id}'>{user_id}</a> botni block qilgani uchun habar ushbu foydalanuvchiga yuborilmadi""")
 
 
 async def create_statistic_test_answers(test: Test, answers):
