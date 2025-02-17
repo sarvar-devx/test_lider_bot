@@ -15,7 +15,6 @@ class UserButtons:
 class AdminButtons:
     CREATE_TEST = '✍ Test Yaratish'
     STATISTIC = '📊 Testlar Statistikasi'
-    TO_ANNOUNCE = '📣 Kanallarga elon berish'
     USERS = '🙍 Foydalanuvchilar'
     SKIP = "⏭️ O'tkazib yuborish"
     REFERRAL_USER_STYLE = '👬👨‍👩‍👦‍👦 Referral user stili'
