@@ -77,7 +77,7 @@ async def news_command_handler(message: Message, state: FSMContext) -> None:
 
 
 @admin_router.message(NewsStates.news)
-async def confirm_handler(message: Message, state: FSMContext) -> None:
+async def confirm_news_handler(message: Message, state: FSMContext) -> None:
     ikb = InlineKeyboardMarkup(
         inline_keyboard=[[InlineKeyboardButton(text='✅ Ha', callback_data=f'confirm_news_{message.message_id}'),
                           InlineKeyboardButton(text="❌ Yo'q", callback_data='dont_confirm')]])
