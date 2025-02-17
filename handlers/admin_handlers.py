@@ -457,11 +457,11 @@ async def generate_user_table(users):
         user_link = f"tg://user?id={user.id}" if user.username is None else f"https://t.me/{user.username}"
         username = "Username mavjud emas" if user.username is None else user.username
         rows.append(f"""<tr>
-            <td align="center">{i}</td>
-            <td align="center"><a href='{user_link}'>{username}</a></td>
-            <td align="center">{user.first_name} {user.last_name if user.last_name else '<del>Familiyasi yoq</del>'}</td>
-            <td align="center"><a href="tel:+998{user.phone_number}">+998{user.phone_number}</a></td>
-            <td align="center">{user.created_at.date()}</td>
+            <td>{i}</td>
+            <td><a href='{user_link}'>{username}</a></td>
+            <td>{user.first_name} {user.last_name if user.last_name else "<del>Familiyasi yo'q</del>"}</td>
+            <td><a href="tel:+998{user.phone_number}">+998{user.phone_number}</a></td>
+            <td>{user.created_at.date()}</td>
         </tr>""")
     return "\n".join(rows)
 
@@ -481,28 +481,69 @@ async def send_users_info(message: Message):
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Test hisoboti</title>
     <style>
-        table, th, td {
-            border: 1px solid black;
-            border-collapse: collapse;
-        }
-
         body {
             background-color: rgb(253, 253, 239);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
         }
 
         .body {
-            margin: 0 20px 0 10px;
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid #ccc;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 2px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: limegreen;
+            color: white;
+        }
+
+        .yellow th {
+            background-color: yellow;
+            color: black;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>""" + f"""<body>
 <div class="body">
-    <br>
-    <b> Adminlar: </b> {len(admins)} ta
-    <br>
-    <br>
-    <table width="100%">
+    <h2>Adminlar</h2>
+    <p><b>Adminlar:</b> {len(admins)} ta</p>
+
+    <table>
         <thead>
-        <tr style="background-color:limegreen;">
+        <tr>
             <th>T/r</th>
             <th>Username</th>
             <th>Ism Familiya</th>
@@ -514,15 +555,13 @@ async def send_users_info(message: Message):
         {admins_str}
         </tbody>
     </table>
-    <br>
-    <br>
-    <br>
-    <b>Hamma Foydalanuvcholar:</b> {len(users)} ta
-    <br>
-    <br>
-    <table width="100%">
+    
+    <h2>Hamma Foydalanuvchilar</h2>
+    <p><b>Hamma Foydalanuvchilar:</b> {len(users)} ta</p>
+    
+    <table class="yellow">
         <thead>
-        <tr style="background-color:yellow;">
+        <tr>
             <th>T/r</th>
             <th>Username</th>
             <th>Ism Familiya</th>
