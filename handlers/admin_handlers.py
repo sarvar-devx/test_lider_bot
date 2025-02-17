@@ -70,8 +70,8 @@ async def confirm_notification_handler(callback: CallbackQuery, state: FSMContex
     await command_start_handler(callback.message, state)
 
 
-@admin_router.message(F.text == AdminButtons.TO_ANNOUNCE)
-async def news_handler(message: Message, state: FSMContext) -> None:
+@admin_router.message(Command(commands='to_announce'))
+async def news_command_handler(message: Message, state: FSMContext) -> None:
     await message.answer('Elonni Kiriting', reply_markup=ReplyKeyboardRemove())
     await state.set_state(NewsStates.news)
 
