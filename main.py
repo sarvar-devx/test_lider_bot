@@ -30,7 +30,6 @@ async def on_start(bot: Bot):
                       BotCommand(command="to_announce", description="📣 Kanallarga elon berish")] + user_commands
     for admin_id in conf.bot.get_admin_list:
         await bot.set_my_commands(admin_commands, BotCommandScopeChat(chat_id=admin_id))
-    await bot.set_my_commands(commands=user_commands)
     await bot.set_webhook(f"{conf.bot.BASE_WEBHOOK_URL}{conf.bot.WEBHOOK_PATH}")
 
 

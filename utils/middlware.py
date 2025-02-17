@@ -35,8 +35,8 @@ class SubscriptionMiddleware(BaseMiddleware):
             if len(message_texts) == 2 and message.text.startswith('/start') and message_texts[-1].isdigit():
                 ref_user = await User.get(int(message_texts[-1]))
                 if ref_user:
-                    await User.update(user.id, referral_user_id=ref_user.id)
-                    if (await User.count_by(User.referral_user_id == ref_user.id)) % 5 == 0:
+                    await User.update(user.id, referrer_id=ref_user.id)
+                    if (await User.count_by(User.referrer_id == ref_user.id)) % 5 == 0:
                         await message.bot.send_message(ref_user.id,
                                                        "🎉 <b>Tabriklaymiz!</b>\n\n👏 Siz 5 ta do'stingizni taklif qilganingiz uchun sizga maxsus bir martalik havola beramiz! 🥳✨")
                         await create_one_time_channel_link(ref_user.id, message.bot)

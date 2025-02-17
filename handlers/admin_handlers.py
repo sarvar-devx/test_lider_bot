@@ -99,6 +99,7 @@ async def send_news_handler(callback: CallbackQuery, state: FSMContext) -> None:
 
 @admin_router.callback_query(F.data.startswith('dont_confirm'))
 async def dont_send_news_handler(callback: CallbackQuery, state: FSMContext):
+    await callback.answer('Bekor qilindi ❌')
     await callback.message.delete()
     await command_start_handler(callback.message, state)
 
@@ -348,28 +349,130 @@ async def one_time_link_handler(message: Message, bot: Bot):
     await create_one_time_channel_link(message.from_user.id, bot)
 
 
+@admin_router.message(Command(commands='users_stats'))
+async def users_stats_handler(message: Message) -> None:
+    users = await User.all()
+    users_str = ""
+    for i, user in enumerate(users, 1):
+        user_link = f"tg://user?id={user.id}" if user.username is None else f"https://t.me/{user.username}"
+        username = "Username mavjud emas" if user.username is None else user.username
+        referrer = "<del>Mavjud emas</del>"
+        if user.referrer_id:
+            referrer_link = f"tg://user?id={user.referrer_id}" if user.referrer.username is None else f"https://t.me/{user.referrer.username}"
+            referrer = f'{user.referrer_id} (<a class="username" href="{referrer_link}">{user.referrer.first_name}</a>)'
+        counter = sum(1 for user_ in users if user_.referrer_id == user.id)
+        users_str += f"""<div class="user-item">
+            <span class="username">{i}. <a class="username" href="{user_link}">{username}</a></span><br>
+            <span class="stats">Ism: {user.first_name} <b style="color: black">|</b> </span>
+            <span class="stats">Familiya: {user.last_name if user.last_name else "<del>Mavjud emas</del>"}</span><br>
+            <span class="stats">Telefon: <a href="tel:+998{user.phone_number}">+998{user.phone_number}</a></span><br>
+            <span class="stats">Referral ID: {referrer}</span><br>
+            <span class="stats">Taklif qilinganlar: {counter}</span>
+        </div>"""
+
+    message_text = """<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foydalanuvchilar Statistikasi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #e0e5ec;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: #e0e5ec;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: inset 5px 5px 15px #babecc, inset -5px -5px 15px #ffffff;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .user-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .user-item {
+            background: #e0e5ec;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 7px 7px 15px #babecc, -7px -7px 15px #ffffff;
+            width: 300px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .user-item:hover {
+            box-shadow: inset 7px 7px 15px #babecc, inset -7px -7px 15px #ffffff;
+        }
+
+        .username {
+            font-weight: bold;
+            color: #007bff;
+            font-size: 20px;
+        }
+
+        .stats {
+            color: #555;
+            font-size: 16px;
+        }
+    </style>
+</head>""" + f"""<body>
+<div class="container">
+    <h2>Foydalanuvchilar Statistikasi</h2>
+    <div class="user-list">
+        {users_str}
+    </div>
+</div>
+</body>
+</html>
+"""
+    with open(f"media/users_stats.html", 'w', encoding='utf-8') as file:
+        file.write(message_text)
+
+    await message.answer_document(FSInputFile('media/users_stats.html'))
+
+
+async def generate_user_table(users):
+    rows = []
+    for i, user in enumerate(users, 1):
+        user_link = f"tg://user?id={user.id}" if user.username is None else f"https://t.me/{user.username}"
+        username = "Username mavjud emas" if user.username is None else user.username
+        rows.append(f"""<tr>
+            <td align="center">{i}</td>
+            <td align="center"><a href='{user_link}'>{username}</a></td>
+            <td align="center">{user.first_name} {user.last_name if user.last_name else '<del>Familiyasi yoq</del>'}</td>
+            <td align="center"><a href="tel:+998{user.phone_number}">+998{user.phone_number}</a></td>
+            <td align="center">{user.created_at.date()}</td>
+        </tr>""")
+    return "\n".join(rows)
+
+
 @admin_router.message(F.text == AdminButtons.USERS)
 async def send_users_info(message: Message):
     users = await User.all()
     admins = [user for user in users if user.id in conf.bot.get_admin_list]
-    admins_str = ""
-    for i, admin in enumerate(admins, 1):
-        admins_str += f"""<tr>
-            <td align="center"> {i}</td>
-            <td align="center"><a href='{f"tg://user?id={admin.id}" if admin.username is None else f"https://t.me/{admin.username}"}'>{"Username mavjud emas" if admin.username is None else admin.username}</a></td>
-            <td align="center">{admin.first_name} {admin.last_name}</td>
-            <td align="center"><a href="tel:+998{admin.phone_number}">+998{admin.phone_number}</a></td>
-            <td align="center"> {admin.created_at.date()}</td>
-        </tr>"""
-    user_str = ""
-    for i, user in enumerate(users, 1):
-        user_str += f"""<tr>
-            <td align="center"> {i}</td>
-            <td align="center"><a href='{f"tg://user?id={user.id}" if user.username is None else f"https://t.me/{user.username}"}'>{"Username mavjud emas" if user.username is None else user.username}</a></td>
-            <td align="center">{user.last_name} {user.first_name}</td>
-            <td align="center"><a href="tel:+998{user.phone_number}">+998{user.phone_number}</a></td>
-            <td align="center"> {user.created_at.date()}</td>
-        </tr>"""
+
+    admins_str = await generate_user_table(admins)
+    user_str = await generate_user_table(users)
     message_text = """ 
 <!DOCTYPE html>
 <html>
@@ -391,8 +494,7 @@ async def send_users_info(message: Message):
             margin: 0 20px 0 10px;
         }
     </style>
-</head>"""
-    message_text += f"""<body>
+</head>""" + f"""<body>
 <div class="body">
     <br>
     <b> Adminlar: </b> {len(admins)} ta
@@ -437,7 +539,7 @@ async def send_users_info(message: Message):
 </html>
 """
 
-    with open(f"media/users_list_for_admin.html", 'w', encoding='utf-8') as file:
+    with open(f"media/users_list.html", 'w', encoding='utf-8') as file:
         file.write(message_text)
 
-    await message.answer_document(FSInputFile('media/users_list_for_admin.html'))
+    await message.answer_document(FSInputFile('media/users_list.html'))
