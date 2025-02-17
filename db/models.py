@@ -13,7 +13,8 @@ class User(TimeBaseModel):
     first_name: Mapped[str] = mapped_column(String(255))
     last_name: Mapped[str] = mapped_column(String(255), nullable=True)
     phone_number: Mapped[str] = mapped_column(String(12), nullable=True)
-    referral_user_id: Mapped[int] = mapped_column(BIGINT, ForeignKey('users.id'), nullable=True)
+    referrer_id: Mapped[int] = mapped_column(BIGINT, ForeignKey('users.id'), nullable=True)
+    referrer: Mapped["User"] = relationship("User", remote_side='User.id')
     user_test_answers: Mapped[list['TestAnswer']] = relationship("TestAnswer", back_populates="user")
 
 
