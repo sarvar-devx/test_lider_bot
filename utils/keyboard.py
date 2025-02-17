@@ -35,7 +35,6 @@ def admin_keyboard_btn(**kwargs):
     keyboard_btn = ReplyKeyboardBuilder()
     keyboard_btn.row(KeyboardButton(text=AdminButtons.CREATE_TEST, **kwargs))
     keyboard_btn.row(KeyboardButton(text=AdminButtons.STATISTIC, **kwargs))
-    keyboard_btn.row(KeyboardButton(text=AdminButtons.TO_ANNOUNCE, **kwargs))
     keyboard_btn.row(KeyboardButton(text=AdminButtons.USERS, **kwargs))
     keyboard_btn.row(KeyboardButton(text=AdminButtons.REFERRAL_USER_STYLE, **kwargs))
     keyboard_btn.row(KeyboardButton(text=AdminButtons.REFERRAL_USER, **kwargs))
