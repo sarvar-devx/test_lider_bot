@@ -22,7 +22,12 @@ async def on_start(bot: Bot):
         BotCommand(command='help', description="🆘 yordam"),
         BotCommand(command='dasturchi', description="👨🏼‍💻 Dasturchi"),
     ]
-    admin_commands = [BotCommand(command="elon", description="📢 Foydalanuvchilarga elon berish")] + user_commands
+    await bot.set_my_commands(commands=user_commands)
+
+    admin_commands = [BotCommand(command="users_stats",
+                                 description="(referrallar bo'yicha)🙎‍♀️🙎‍♂️Foydalanuvchilar statistikasini ko'rish"),
+                      BotCommand(command="elon", description="📢 Foydalanuvchilarga elon berish"),
+                      BotCommand(command="to_announce", description="📣 Kanallarga elon berish")] + user_commands
     for admin_id in conf.bot.get_admin_list:
         await bot.set_my_commands(admin_commands, BotCommandScopeChat(chat_id=admin_id))
     await bot.set_my_commands(commands=user_commands)
