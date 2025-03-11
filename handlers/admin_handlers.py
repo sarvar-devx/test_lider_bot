@@ -8,9 +8,11 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, InlineKeyboardMarkup, ReplyKeyboardRemove, InlineKeyboardButton, CallbackQuery, \
     ReplyKeyboardMarkup, KeyboardButton, FSInputFile
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from sqlalchemy import select, func
 
 from config import conf
 from db import Test, TestAnswer, User
+from db.base import db
 from db.models import ReferralMessage
 from utils.create_certificates import sending_certificates
 from utils.filters import IsAdminFilter
@@ -463,6 +465,9 @@ async def get_users_test_counts(user_ids):
 
 async def generate_user_table(users):
     rows = []
+    user_ids = [user.id for user in users]
+    test_counts = await get_users_test_counts(user_ids)
+
     for i, user in enumerate(users, 1):
         user_link = f"tg://user?id={user.id}" if user.username is None else f"https://t.me/{user.username}"
         username = "Username mavjud emas" if user.username is None else user.username
@@ -472,6 +477,7 @@ async def generate_user_table(users):
             <td>{user.first_name} {user.last_name if user.last_name else "<del>Familiyasi yo'q</del>"}</td>
             <td><a href="tel:+998{user.phone_number}">+998{user.phone_number}</a></td>
             <td>{user.created_at.date()}</td>
+            <td>{test_counts.get(user.id, 0)}</td>
         </tr>""")
     return "\n".join(rows)
 
@@ -502,7 +508,7 @@ async def send_users_info(message: Message):
 
         .body {
             width: 100%;
-            max-width: 900px;
+            max-width: 950px;
             background: white;
             padding: 20px;
             border-radius: 10px;
@@ -558,7 +564,8 @@ async def send_users_info(message: Message):
             <th>Username</th>
             <th>Ism Familiya</th>
             <th>Telefon raqam</th>
-            <th>Botga register qilgan vaqti</th>
+            <th>A’zo bo‘lgan vaqti</th>
+            <th>Testlar soni</th>
         </tr>
         </thead>
         <tbody>
@@ -576,7 +583,8 @@ async def send_users_info(message: Message):
             <th>Username</th>
             <th>Ism Familiya</th>
             <th>Telefon raqam</th>
-            <th>Botga register qilgan vaqti</th>
+            <th>A’zo bo‘lgan vaqti</th>
+            <th>Testlar soni</th>
         </tr>
         </thead>
         <tbody>
