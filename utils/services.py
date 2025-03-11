@@ -73,7 +73,8 @@ async def referral_user(message: Message, user_id) -> None:
 
 <u><b>5 ta</b></u> do'stingiz sizning taklif havolingiz orqali <b>BOTga</b> kirib, kanallarga a'zo bo'lib, ro'yxatdan o'tsa, bot sizga <b>OLIMPIADA boʻladigan kanal</b> uchun bir martalik link beradi.""")
     except TelegramForbiddenError as e:
-        await message.answer(f"""{e} id: <a href='tg://user?id={user_id}'>{user_id}</a> botni block qilgani uchun habar ushbu foydalanuvchiga yuborilmadi""")
+        await message.answer(
+            f"""{e} id: <a href='tg://user?id={user_id}'>{user_id}</a> botni block qilgani uchun habar ushbu foydalanuvchiga yuborilmadi""")
 
 
 async def create_statistic_test_answers(test: Test, answers):
@@ -81,12 +82,12 @@ async def create_statistic_test_answers(test: Test, answers):
     users = ''
     for i, test_answer in enumerate(answers_users, start=1):
         users += f"""<tr>
-                <td align='center'> {i}</td>
-                <td align='center'>{test_answer.user.last_name} {test_answer.user.first_name}</td>
-                <td align='center'>+998 {test_answer.user.phone_number}</td>
-                <td align='center'> {len(test_answer.accepted_answers)}</td>
-                <td align='center'> {test_answer.quality_level:.1f}%</td>
-                <td align='center'> {test_answer.created_at.date()} {test_answer.created_at.hour}:{test_answer.created_at.minute}:{test_answer.created_at.second}</td>
+                <td> {i}</td>
+                <td>{test_answer.user.last_name} {test_answer.user.first_name}</td>
+                <td>+998 {test_answer.user.phone_number}</td>
+                <td> {len(test_answer.accepted_answers)}</td>
+                <td> {test_answer.quality_level:.1f}%</td>
+                <td> {test_answer.created_at.date()} {test_answer.created_at.hour}:{test_answer.created_at.minute}:{test_answer.created_at.second}</td>
             </tr>"""
 
     template = """<!DOCTYPE html>
@@ -96,28 +97,90 @@ async def create_statistic_test_answers(test: Test, answers):
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Test hisoboti</title>
     <style>
-        table, th, td {
-    border: 1px solid black;
-            border-collapse: collapse;
-        }
-
         body {
-    background-color: rgb(253, 253, 239);
+            font-family: Arial, sans-serif;
+            background: #e3f2fd;
+            color: #333;
+            margin: 0;
+            padding: 20px;
         }
 
-        .body {
-    margin: 0 20px 0 10px;
+        .container {
+            max-width: 90%;
+            width: 950px;
+            margin: auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #64b5f6;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #c6e4ff;
+        }
+
+        tr:hover {
+            background: #9ddaff;
+            color: #697268;
+        }
+
+        .highlight {
+            color: red;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            background: #64b5f4;
+            color: #000000;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        a {
+            color: #ff4081;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 """ + f"""<body>
-<div class="body">
-
-    </br><b>Ushbu hisobot <a href="https://t.me/{conf.bot.BOT_USERNAME}"><font color='red'>@{conf.bot.BOT_USERNAME}</font></a> orqali
-    tayyorlandi.</b></br>
-
-    <b>Test kodi:</b> {test.id} </br>
-    <b>Savollar soni:</b> {len(test.answers)} ta </br></br>
-    <table width='100%'>
+<div class="container">
+    <h2>📊 Test Hisoboti</h2>
+    <p><b>Ushbu hisobot <a href="https://t.me/{conf.bot.BOT_USERNAME}"><font color='red'>@{conf.bot.BOT_USERNAME}</font></a> orqali tayyorlandi.</b>
+    </p>
+    <p><b>Test muallifi:</b> Xumoyun Abdusamatov</p>
+    <p><b>Test kodi:</b> {test.id}</p>
+    <p><b>Savollar soni:</b> {len(test.answers)} ta</p>
+    
+    <table>
         <thead>
         <tr style='background-color:beige;'>
             <th>T/r</th>
@@ -136,9 +199,11 @@ async def create_statistic_test_answers(test: Test, answers):
         </tbody>
     </table>
     <br>
-    <b>To`g`ri javoblar:</b>
-    <br>📝 <b>Kalitlar:</b> {answers} <br><b>Testda qatnashganlarga rahmat...</b>😊😊😊
-
+    <div class="footer">
+        <p><b>✅ To'g'ri javoblar:</b></p>
+        <p>📝 <b>Kalitlar:</b> {answers}</p>
+        <p><b>Testda qatnashganlarga rahmat!</b> 😊😊😊</p>
+    </div>
 </div>
 </body>
 </html>"""
