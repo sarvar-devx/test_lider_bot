@@ -451,6 +451,16 @@ async def users_stats_handler(message: Message) -> None:
     await message.answer_document(FSInputFile('media/users_stats.html'))
 
 
+async def get_users_test_counts(user_ids):
+    query = (
+        select(TestAnswer.user_id, func.count().label("test_count"))
+        .where(TestAnswer.user_id.in_(user_ids))
+        .group_by(TestAnswer.user_id)
+    )
+    result = await db.execute(query)
+    return {row.user_id: row.test_count for row in result.all()}
+
+
 async def generate_user_table(users):
     rows = []
     for i, user in enumerate(users, 1):
