@@ -10,8 +10,8 @@ class Certificate(BaseModel):
 
 class User(TimeBaseModel):
     username: Mapped[str] = mapped_column(String(255), nullable=True)
-    first_name: Mapped[str] = mapped_column(String(255))
-    last_name: Mapped[str] = mapped_column(String(255), nullable=True)
+    first_name: Mapped[str] = mapped_column(String(64))
+    last_name: Mapped[str] = mapped_column(String(64), nullable=True)
     phone_number: Mapped[str] = mapped_column(String(12), nullable=True)
     referrer_id: Mapped[int] = mapped_column(BIGINT, ForeignKey('users.id'), nullable=True)
     referrer: Mapped["User"] = relationship("User", remote_side='User.id')
