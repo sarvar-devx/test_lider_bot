@@ -474,7 +474,7 @@ async def generate_user_table(users):
         rows.append(f"""<tr>
             <td>{i}</td>
             <td><a href='{user_link}'>{username}</a></td>
-            <td>{user.first_name} {user.last_name if user.last_name else "<del>Familiyasi yo'q</del>"}</td>
+            <td>{user.first_name}</br> {user.last_name if user.last_name else "<del>Familiyasi yo'q</del>"}</td>
             <td><a href="tel:+998{user.phone_number}">+998{user.phone_number}</a></td>
             <td>{user.created_at.date()}</td>
             <td>{test_counts.get(user.id, 0)}</td>
