@@ -507,8 +507,6 @@ async def send_users_info(message: Message):
         }
 
         .body {
-            width: 100%;
-            max-width: 950px;
             background: white;
             padding: 20px;
             border-radius: 10px;
